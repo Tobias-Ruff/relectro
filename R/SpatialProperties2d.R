@@ -116,6 +116,7 @@ SpatialProperties2d<- setClass(
             speedScore="numeric",
             speedRateSlope="numeric",
             speedRateIntercept="numeric",
+            speedPValue='numeric',
             ##
             nShufflings="numeric",
             minShiftMs="numeric",
@@ -178,6 +179,8 @@ setMethod("show", "SpatialProperties2d",
               print(paste(object@speedRateSlope))
               print("speedRateIntercept:")
               print(paste(object@speedRateIntercept))
+              print("speedPValue:")
+              print(paste(object@speedPValue))
             }
             print(paste("nShufflings:",object@nShufflings))
             print(paste("shuffled values:",length(object@infoScoreShuffle)))
@@ -1245,6 +1248,8 @@ setMethod(f="speedScore",
             sp@speedScore<-apply(ifrSel,1,cor,speed)
             if(runLm){
               c<-apply(ifrSel,1,function(x,y){lm(x~y)$coefficients},speed)
+              c.p_value<-apply(ifrSel,1,function(x,y){summary(lm(x~y))$coefficients[2, 4]},speed)
+              sp@speedPValue=c.p_value
               sp@speedRateSlope=c[2,]
               sp@speedRateIntercept=c[1,]
             }
